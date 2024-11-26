@@ -6,5 +6,5 @@
 script = ExtResource("1_ku5q3")
 Name = "Dirt"
 UVs = {
-1: Vector2(0.003125, 0.003125)
+1: Vector2(0.1, 0)
 }

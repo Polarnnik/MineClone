@@ -53,7 +53,8 @@ namespace Mini.World
 			if (BlockMaterial != null && BlockMaterial.AlbedoTexture is Texture2D texture)
 			{
 				AtlasSize = new Vector2(texture.GetWidth(), texture.GetHeight());
-				TextureStep = AtlasSize.X / BlockTextureSize.X;
+				TextureStep =  BlockTextureSize.X /AtlasSize.X;
+				GD.Print("Texture step is ", TextureStep);
 			}
 			else
 			{

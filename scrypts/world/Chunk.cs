@@ -12,7 +12,7 @@ public partial class Chunk : Node3D
 	private MeshInstance3D meshInstance;
 	private readonly SurfaceTool surfTool = new();
 	
-	public Chunk()
+	public override void _Ready()
 	{
 		blocks = new BlockType[Dimensions.X * Dimensions.Y * Dimensions.Z];
 		meshInstance = new MeshInstance3D();
@@ -81,6 +81,7 @@ public partial class Chunk : Node3D
 		surfTool.GenerateNormals();
 		var mesh = surfTool.Commit();
 		meshInstance.Mesh = mesh;
+		meshInstance.Mesh.SurfaceSetMaterial(0, BlockRegistry.Instance.BlockMaterial);
 		surfTool.Clear();
 		
 		meshInstance.CreateTrimeshCollision();
@@ -133,8 +134,8 @@ public partial class Chunk : Node3D
 		var triangleTwo = new Vector3[] { a, c, d };
 		var uvTwo = new Vector2[] { uvs, cUV, dUV };
 		
-		surfTool.AddTriangleFan(triangleOne, uvOne);
-		surfTool.AddTriangleFan(triangleTwo, uvTwo);
+		surfTool.AddTriangleFan(triangleOne, uvTwo);
+		surfTool.AddTriangleFan(triangleTwo, uvOne);
 		
 	}
 

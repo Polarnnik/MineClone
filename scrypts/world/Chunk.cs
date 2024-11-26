@@ -51,7 +51,11 @@ public partial class Chunk : Node3D
 			{
 				for (int y = 0; y < Dimensions.Y; y++)
 				{
-					SetBlock(x, y, z, y < 50 ? BlockType.Dirt : BlockType.Air);
+					SetBlock(x, y, z, 
+						y < 40 ? BlockType.Stone :   // Камень на глубине
+						y < 50 ? BlockType.Dirt :    // Грунт выше камня
+						BlockType.Air);              // Остальное — воздух
+
 				}
 			}
 		}
@@ -67,8 +71,9 @@ public partial class Chunk : Node3D
 			{
 				for (int y = 0; y < Dimensions.Y; y++)
 				{
-					if (!(GetBlock(x, y, z) == BlockType.Air))
-						GenerateBlock(new Vector3I(x, y, z));
+					var block = GetBlock(x, y, z);
+					if (!(block == BlockType.Air))
+						GenerateBlock(new Vector3I(x, y, z), block);
 				}
 			}
 		}
@@ -81,46 +86,55 @@ public partial class Chunk : Node3D
 		meshInstance.CreateTrimeshCollision();
 	}
 
-	private void GenerateBlock(Vector3I blockPosition)
+	private void GenerateBlock(Vector3I blockPosition, BlockType blockType)
 	{
 		if (CheckEmpty(blockPosition + Vector3I.Up))
 		{
-			CreateFaceMesh(BlockMeshData.TopFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.TopFace, blockPosition, BlockFace.Top, blockType);
 		}
 		if (CheckEmpty(blockPosition + Vector3I.Down))
 		{
-			CreateFaceMesh(BlockMeshData.BottomFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.BottomFace, blockPosition, BlockFace.Bottom, blockType);
 		}
 		if (CheckEmpty(blockPosition + Vector3I.Right))
 		{
-			CreateFaceMesh(BlockMeshData.RightFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.RightFace, blockPosition, BlockFace.Right, blockType);
 		}
 		if (CheckEmpty(blockPosition + Vector3I.Left))
 		{
-			CreateFaceMesh(BlockMeshData.LeftFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.LeftFace, blockPosition, BlockFace.Left, blockType);
 		}
 		if (CheckEmpty(blockPosition + Vector3I.Forward))
 		{
-			CreateFaceMesh(BlockMeshData.FrontFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.FrontFace, blockPosition, BlockFace.Front, blockType);
 		}
 		if (CheckEmpty(blockPosition + Vector3I.Back))
 		{
-			CreateFaceMesh(BlockMeshData.BackFace, blockPosition);
+			CreateFaceMesh(BlockMeshData.BackFace, blockPosition, BlockFace.Back, blockType);
 		}
 	}
 
-	private void CreateFaceMesh(int[] face, Vector3I blockPosition)
+	private void CreateFaceMesh(int[] face, Vector3I blockPosition, BlockFace direction, BlockType type)
 	{
+		var data = BlockRegistry.Instance.GetBlockData(type);
+		var uvs = data.GetUV(direction);
+		
 		var a = BlockMeshData.Verticies[face[0]] + blockPosition;
 		var b = BlockMeshData.Verticies[face[1]] + blockPosition;
 		var c = BlockMeshData.Verticies[face[2]] + blockPosition;
 		var d = BlockMeshData.Verticies[face[3]] + blockPosition;
+		
+		var bUV = new Vector2(uvs.X + BlockRegistry.Instance.TextureStep, uvs.Y);
+		var cUV = new Vector2(uvs.X, uvs.Y + BlockRegistry.Instance.TextureStep);
+		var dUV =  new Vector2(uvs.X + BlockRegistry.Instance.TextureStep, uvs.Y + BlockRegistry.Instance.TextureStep);
 
 		var triangleOne = new Vector3[] { a, b, c };
+		var uvOne = new Vector2[] { uvs, bUV, cUV };
 		var triangleTwo = new Vector3[] { a, c, d };
+		var uvTwo = new Vector2[] { uvs, cUV, dUV };
 		
-		surfTool.AddTriangleFan(triangleOne);
-		surfTool.AddTriangleFan(triangleTwo);
+		surfTool.AddTriangleFan(triangleOne, uvOne);
+		surfTool.AddTriangleFan(triangleTwo, uvTwo);
 		
 	}
 

@@ -10,7 +10,8 @@ namespace Mini.World
 		[Export] public StandardMaterial3D BlockMaterial;
 		[Export] public string BlockDataDirectory = "res://assets/blockBase/";
 		[Export] public Vector2 BlockTextureSize = new Vector2(16, 16);
-		
+
+		public float TextureStep;
 		public static BlockRegistry Instance { get; private set; }
 		public Vector2 AtlasSize { get; private set; }
 
@@ -52,6 +53,7 @@ namespace Mini.World
 			if (BlockMaterial != null && BlockMaterial.AlbedoTexture is Texture2D texture)
 			{
 				AtlasSize = new Vector2(texture.GetWidth(), texture.GetHeight());
+				TextureStep = AtlasSize.X / BlockTextureSize.X;
 			}
 			else
 			{

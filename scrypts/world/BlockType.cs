@@ -4,5 +4,6 @@ namespace Mini.World;
 public enum BlockType : byte
 {
     Air,
-    Dirt
+    Dirt,
+    Stone
 }

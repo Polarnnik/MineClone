@@ -33,8 +33,9 @@ omni_range = 10.8961
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_luuhj")
 
-[node name="Chunk" parent="." instance=ExtResource("2_kvk0j")]
-
 [node name="BlockRegistry" parent="." instance=ExtResource("3_riulr")]
 BlockMaterial = SubResource("StandardMaterial3D_bp2vu")
 BlockTextureSize = Vector2(32, 32)
+
+[node name="Chunk" parent="." instance=ExtResource("2_kvk0j")]
+script = null

@@ -13,6 +13,7 @@ public enum BlockFace
     Bottom,
 }
 
+[GlobalClass]
 public partial class BlockData : Resource
 {
     [Export] public string Name {get; set; }
@@ -57,6 +58,5 @@ public partial class BlockData : Resource
     public Vector2 GetUV(BlockFace face)
     {
         return UVs.TryGetValue(face, out var uv) ? uv : CollectionExtensions.GetValueOrDefault(UVs, BlockFace.Front);
-
     }
 }

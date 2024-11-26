@@ -1,0 +1,40 @@
+[gd_scene load_steps=9 format=3 uid="uid://cyw337c8smoya"]
+
+[ext_resource type="Script" path="res://scrypts/controllers/FreeCam.cs" id="2_b420c"]
+[ext_resource type="PackedScene" uid="uid://dbkbxch6fd21s" path="res://scenes/World/Chunk.tscn" id="2_kvk0j"]
+[ext_resource type="PackedScene" uid="uid://clgnoni4fxxxh" path="res://scenes/World/BlockRegistry.tscn" id="3_riulr"]
+[ext_resource type="Texture2D" uid="uid://bvqkf106kfosj" path="res://assets/textures/textureAtlas.png" id="4_lc1tq"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q2y8b"]
+
+[sub_resource type="Sky" id="Sky_2sdrq"]
+sky_material = SubResource("ProceduralSkyMaterial_q2y8b")
+
+[sub_resource type="Environment" id="Environment_luuhj"]
+background_mode = 2
+sky = SubResource("Sky_2sdrq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bp2vu"]
+albedo_texture = ExtResource("4_lc1tq")
+
+[node name="Main" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.812521, 0, -0.582932, 0, 1, 0, 0.582932, 0, 0.812521, -63.6163, -1.20822, 42.5028)
+fov = 30.9375
+script = ExtResource("2_b420c")
+MovementSpeed = 26.155
+MouseSensitivity = 0.448
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.8038, -42.7902, 34.3116)
+omni_range = 10.8961
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_luuhj")
+
+[node name="Chunk" parent="." instance=ExtResource("2_kvk0j")]
+
+[node name="BlockRegistry" parent="." instance=ExtResource("3_riulr")]
+BlockMaterial = SubResource("StandardMaterial3D_bp2vu")
+BlockTextureSize = Vector2(32, 32)

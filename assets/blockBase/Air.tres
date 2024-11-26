@@ -1,0 +1,8 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://j6tyog47bcpu"]
+
+[ext_resource type="Script" path="res://scrypts/world/BlockData.cs" id="1_py72k"]
+
+[resource]
+script = ExtResource("1_py72k")
+Name = "Air"
+UVs = null

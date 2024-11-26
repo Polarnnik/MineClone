@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BlockData" load_steps=2 format=3 uid="uid://cfamlag5tf5qm"]
+
+[ext_resource type="Script" path="res://scrypts/world/BlockData.cs" id="1_us3j2"]
+
+[resource]
+script = ExtResource("1_us3j2")
+Name = "Stone"
+UVs = {
+2: Vector2(0, 0.003125)
+}

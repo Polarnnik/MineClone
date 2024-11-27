@@ -96,7 +96,7 @@ public partial class Chunk : Node3D
 			}
 		}
 
-		//surfTool.GenerateNormals();
+		surfTool.GenerateNormals();
 		var mesh = surfTool.Commit();
 		meshInstance.Mesh = mesh;
 		meshInstance.Mesh.SurfaceSetMaterial(0, BlockRegistry.Instance.BlockMaterial);
@@ -123,11 +123,11 @@ public partial class Chunk : Node3D
 		{
 			CreateFaceMesh(BlockMeshData.LeftFace, blockPosition, BlockFace.Left, blockType);
 		}
-		if (CheckEmpty(blockPosition + Vector3I.Forward))
+		if (CheckEmpty(blockPosition + Vector3I.Back))
 		{
 			CreateFaceMesh(BlockMeshData.FrontFace, blockPosition, BlockFace.Front, blockType);
 		}
-		if (CheckEmpty(blockPosition + Vector3I.Back))
+		if (CheckEmpty(blockPosition + Vector3I.Forward))
 		{
 			CreateFaceMesh(BlockMeshData.BackFace, blockPosition, BlockFace.Back, blockType);
 		}

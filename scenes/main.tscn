@@ -15,8 +15,9 @@ background_mode = 2
 sky = SubResource("Sky_2sdrq")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8e6sy"]
-frequency = 0.008
-fractal_octaves = 3
+frequency = 0.0025
+fractal_type = 0
+fractal_octaves = 2
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_y78mk")

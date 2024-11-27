@@ -53,7 +53,8 @@ public partial class Chunk : Node3D
 				{
 					SetBlock(x, y, z, 
 						y < 40 ? BlockType.Stone :   // Камень на глубине
-						y < 50 ? BlockType.Dirt :    // Грунт выше камня
+						y < 50 ? BlockType.Dirt :
+						y < 51 ? BlockType.Grass :// Грунт выше камня
 						BlockType.Air);              // Остальное — воздух
 
 				}
@@ -130,9 +131,9 @@ public partial class Chunk : Node3D
 		var dUV =  new Vector2(uvs.X + BlockRegistry.Instance.TextureStep, uvs.Y + BlockRegistry.Instance.TextureStep);
 
 		var triangleOne = new Vector3[] { a, b, c };
-		var uvOne = new Vector2[] { uvs, bUV, cUV };
+		var uvOne = new Vector2[] { bUV, cUV, uvs};
 		var triangleTwo = new Vector3[] { a, c, d };
-		var uvTwo = new Vector2[] { uvs, cUV, dUV };
+		var uvTwo = new Vector2[] { bUV, dUV, cUV };
 		
 		surfTool.AddTriangleFan(triangleOne, uvTwo);
 		surfTool.AddTriangleFan(triangleTwo, uvOne);

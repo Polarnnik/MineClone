@@ -5,5 +5,6 @@ public enum BlockType : byte
 {
     Air,
     Dirt,
-    Stone
+    Stone,
+    Grass
 }

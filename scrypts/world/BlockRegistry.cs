@@ -4,6 +4,7 @@ using System;
 
 namespace Mini.World
 {
+	[Tool]
 	public partial class BlockRegistry : Node
 	{
 		[Export] public Dictionary<BlockType, BlockData> Blocks;

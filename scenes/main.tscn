@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scrypts/Main.cs" id="1_y78mk"]
 [ext_resource type="Script" path="res://scrypts/controllers/FreeCam.cs" id="2_b420c"]
 [ext_resource type="PackedScene" uid="uid://clgnoni4fxxxh" path="res://scenes/World/BlockRegistry.tscn" id="3_riulr"]
-[ext_resource type="Texture2D" uid="uid://bvqkf106kfosj" path="res://assets/textures/textureAtlas.png" id="4_lc1tq"]
+[ext_resource type="PackedScene" uid="uid://dbkbxch6fd21s" path="res://scenes/World/Chunk.tscn" id="5_lpsjf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q2y8b"]
 
@@ -14,12 +14,15 @@ sky_material = SubResource("ProceduralSkyMaterial_q2y8b")
 background_mode = 2
 sky = SubResource("Sky_2sdrq")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ypet"]
-albedo_texture = ExtResource("4_lc1tq")
-texture_filter = 0
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8e6sy"]
+frequency = 0.008
+fractal_octaves = 3
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_y78mk")
+
+[node name="BlockRegistry" parent="." instance=ExtResource("3_riulr")]
+BlockTextureSize = Vector2(32, 32)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.812521, 0, -0.582932, 0, 1, 0, 0.582932, 0, 0.812521, -12.5522, -1.20822, -2.06224)
@@ -35,6 +38,5 @@ omni_range = 10.8961
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_luuhj")
 
-[node name="BlockRegistry" parent="." instance=ExtResource("3_riulr")]
-BlockMaterial = SubResource("StandardMaterial3D_5ypet")
-BlockTextureSize = Vector2(32, 32)
+[node name="Chunk" parent="." instance=ExtResource("5_lpsjf")]
+Noise = SubResource("FastNoiseLite_8e6sy")

@@ -6,6 +6,7 @@ namespace Mini.World;
 [Tool]
 public partial class Chunk : Node3D
 {
+	[Export] public FastNoiseLite Noise;
 	public static Vector3I Dimensions = new Vector3I(32, 384, 32);
 	
 	private BlockType[] blocks;
@@ -45,21 +46,37 @@ public partial class Chunk : Node3D
 	
 	private void GenerateTerrain()
 	{
+		var maxHeight = Dimensions.Y / 4; // Controls terrain elevation range
+
 		for (int x = 0; x < Dimensions.X; x++)
 		{
 			for (int z = 0; z < Dimensions.Z; z++)
 			{
-				for (int y = 0; y < Dimensions.Y; y++)
-				{
-					SetBlock(x, y, z, 
-						y < 40 ? BlockType.Stone :   // Камень на глубине
-						y < 50 ? BlockType.Dirt :
-						y < 51 ? BlockType.Grass :// Грунт выше камня
-						BlockType.Air);              // Остальное — воздух
+				// Calculate global position for noise and terrain height
+				var globalBlockPos = GetGlobalBlockPosition(new Vector3(x, 0, z));
+				var groundHeight = (int)(maxHeight * ((Noise.GetNoise2D(globalBlockPos.X, globalBlockPos.Z) + 1) / 2f));
 
+				for (int y = 0; y < groundHeight; y++)
+				{
+					if (y < groundHeight / 2)
+						SetBlock(x, y, z, BlockType.Stone); // Lower half is stone
+					else if (y < groundHeight - 1)
+						SetBlock(x, y, z, BlockType.Dirt); // Upper layer is dirt
+					else
+						SetBlock(x, y, z, BlockType.Grass); // Topmost block is grass
 				}
+
+				// Skip the rest of the column as it will be air
+				for (int y = groundHeight; y < Dimensions.Y; y++)
+					SetBlock(x, y, z, BlockType.Air);
 			}
 		}
+	}
+
+
+	public Vector3 GetGlobalBlockPosition(Vector3 localPosition)
+	{
+		return Position + localPosition;
 	}
 	
 	public void UpdateMesh()
@@ -79,7 +96,7 @@ public partial class Chunk : Node3D
 			}
 		}
 
-		surfTool.GenerateNormals();
+		//surfTool.GenerateNormals();
 		var mesh = surfTool.Commit();
 		meshInstance.Mesh = mesh;
 		meshInstance.Mesh.SurfaceSetMaterial(0, BlockRegistry.Instance.BlockMaterial);
@@ -142,10 +159,7 @@ public partial class Chunk : Node3D
 
 	private bool CheckEmpty(Vector3I blockPosition)
 	{
-		if (GetBlock(blockPosition.X, blockPosition.Y, blockPosition.Z) == BlockType.Air)
-		{
-			return true;
-		}
-		return false;
+		var block = GetBlock(blockPosition.X, blockPosition.Y, blockPosition.Z);
+		return block == BlockType.Air;
 	}
 }

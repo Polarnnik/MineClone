@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -7,6 +8,7 @@ namespace Mini.World;
 public partial class Chunk : Node3D
 {
 	[Export] public FastNoiseLite Noise;
+	[Export] public ChunkManager chunkManager;
 	public static Vector3I Dimensions = new Vector3I(32, 384, 32);
 	
 	private BlockType[] blocks;
@@ -20,7 +22,6 @@ public partial class Chunk : Node3D
 		AddChild(meshInstance);
 		
 		GenerateTerrain();
-		SetBlock(0, 285, 0, BlockType.Dirt);
 		UpdateMesh();
 	}
 	
@@ -44,7 +45,7 @@ public partial class Chunk : Node3D
 		blocks[GetBlockIndex(x, y, z)] = blockType;
 	}
 	
-	private void GenerateTerrain()
+	public void GenerateTerrain()
 	{
 		var maxHeight = Dimensions.Y / 4; // Controls terrain elevation range
 
@@ -52,23 +53,22 @@ public partial class Chunk : Node3D
 		{
 			for (int z = 0; z < Dimensions.Z; z++)
 			{
-				// Calculate global position for noise and terrain height
 				var globalBlockPos = GetGlobalBlockPosition(new Vector3(x, 0, z));
 				var groundHeight = (int)(maxHeight * ((Noise.GetNoise2D(globalBlockPos.X, globalBlockPos.Z) + 1) / 2f));
 
 				for (int y = 0; y < groundHeight; y++)
 				{
 					if (y < groundHeight / 2)
-						SetBlock(x, y, z, BlockType.Stone); // Lower half is stone
+						blocks[GetBlockIndex(x, y, z)] =  BlockType.Stone; 
 					else if (y < groundHeight - 1)
-						SetBlock(x, y, z, BlockType.Dirt); // Upper layer is dirt
+						blocks[GetBlockIndex(x, y, z)] = BlockType.Dirt; 
 					else
-						SetBlock(x, y, z, BlockType.Grass); // Topmost block is grass
+						blocks[GetBlockIndex(x, y, z)] = BlockType.Grass; 
 				}
 
 				// Skip the rest of the column as it will be air
 				for (int y = groundHeight; y < Dimensions.Y; y++)
-					SetBlock(x, y, z, BlockType.Air);
+					blocks[GetBlockIndex(x, y, z)] = BlockType.Air;
 			}
 		}
 	}
@@ -96,12 +96,10 @@ public partial class Chunk : Node3D
 			}
 		}
 
-		surfTool.GenerateNormals();
 		var mesh = surfTool.Commit();
 		meshInstance.Mesh = mesh;
 		meshInstance.Mesh.SurfaceSetMaterial(0, BlockRegistry.Instance.BlockMaterial);
-		surfTool.Clear();
-		
+				
 		meshInstance.CreateTrimeshCollision();
 	}
 
@@ -147,19 +145,36 @@ public partial class Chunk : Node3D
 		var cUV = new Vector2(uvs.X, uvs.Y + BlockRegistry.Instance.TextureStep);
 		var dUV =  new Vector2(uvs.X + BlockRegistry.Instance.TextureStep, uvs.Y + BlockRegistry.Instance.TextureStep);
 
-		var triangleOne = new Vector3[] { a, b, c };
-		var uvOne = new Vector2[] { bUV, cUV, uvs};
-		var triangleTwo = new Vector3[] { a, c, d };
-		var uvTwo = new Vector2[] { bUV, dUV, cUV };
+		var faceArrayOne = new Vector3[] { a, b, c };
+		var faceArrayTwo = new Vector3[] { a, c, d};
+		var faceUv = new Vector2[] { bUV, dUV, cUV };
+		var faceUvTwo = new Vector2[] { bUV, cUV, uvs };
 		
-		surfTool.AddTriangleFan(triangleOne, uvTwo);
-		surfTool.AddTriangleFan(triangleTwo, uvOne);
-		
+		surfTool.AddTriangleFan(faceArrayOne, faceUv);
+		surfTool.AddTriangleFan(faceArrayTwo, faceUvTwo);
 	}
 
 	private bool CheckEmpty(Vector3I blockPosition)
 	{
-		var block = GetBlock(blockPosition.X, blockPosition.Y, blockPosition.Z);
-		return block == BlockType.Air;
+		if (blockPosition.X >= 0 && blockPosition.X < Dimensions.X &&
+			blockPosition.Y >= 0 && blockPosition.Y < Dimensions.Y &&
+			blockPosition.Z >= 0 && blockPosition.Z < Dimensions.Z)
+		{
+			return blocks[GetBlockIndex(blockPosition.X, blockPosition.Y, blockPosition.Z)] == BlockType.Air;
+		}
+		
+		var globalPos = GetGlobalBlockPosition(blockPosition);
+		var neighborChunk = chunkManager.GetChunkAtPosition(globalPos);
+	
+		if (neighborChunk != null)
+		{
+			var localX = Mathf.FloorToInt(globalPos.X) % Dimensions.X;
+			var localY = Mathf.FloorToInt(globalPos.Y) % Dimensions.Y;
+			var localZ = Mathf.FloorToInt(globalPos.Z) % Dimensions.Z;
+
+			return neighborChunk.GetBlock(localX, localY, localZ) == BlockType.Air;
+		}
+
+		return true;
 	}
 }

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://t3s0eqevcjpf"]
+
+[ext_resource type="Script" path="res://scrypts/world/ChunkManager.cs" id="1_g0tv0"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ki4bu"]
+
+[node name="ChunkManager" type="Node"]
+script = ExtResource("1_g0tv0")
+Noise = SubResource("FastNoiseLite_ki4bu")
+RenderDistance = 5

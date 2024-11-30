@@ -8,7 +8,7 @@ namespace Mini.World
 	public partial class BlockRegistry : Node
 	{
 		[Export] public Dictionary<BlockType, BlockData> Blocks;
-		[Export] public StandardMaterial3D BlockMaterial;
+		[Export] public Material BlockMaterial;
 		[Export] public string BlockDataDirectory = "res://assets/blockBase/";
 		[Export] public Vector2 BlockTextureSize = new Vector2(16, 16);
 
@@ -51,7 +51,7 @@ namespace Mini.World
 
 		private void InitializeAtlasSize()
 		{
-			if (BlockMaterial != null && BlockMaterial.AlbedoTexture is Texture2D texture)
+			/*if (BlockMaterial != null && BlockMaterial is Texture2D texture)
 			{
 				AtlasSize = new Vector2(texture.GetWidth(), texture.GetHeight());
 				TextureStep =  BlockTextureSize.X /AtlasSize.X;
@@ -60,7 +60,7 @@ namespace Mini.World
 			else
 			{
 				GD.PrintErr("No atlas given, impossible to generate UVs if there is none.");
-			}
+			}*/
 		}
 		
 		private void LoadUVs()

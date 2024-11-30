@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scrypts/Main.cs" id="1_y78mk"]
 [ext_resource type="Script" path="res://scrypts/controllers/FreeCam.cs" id="2_b420c"]
-[ext_resource type="PackedScene" uid="uid://t3s0eqevcjpf" path="res://scenes/World/ChunkManager.tscn" id="3_b5h5o"]
 [ext_resource type="PackedScene" uid="uid://clgnoni4fxxxh" path="res://scenes/World/BlockRegistry.tscn" id="3_riulr"]
+[ext_resource type="PackedScene" uid="uid://dbkbxch6fd21s" path="res://scenes/World/Chunk.tscn" id="4_6wc26"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q2y8b"]
 
@@ -20,8 +20,6 @@ script = ExtResource("1_y78mk")
 [node name="BlockRegistry" parent="." instance=ExtResource("3_riulr")]
 BlockTextureSize = Vector2(32, 32)
 
-[node name="ChunkManager" parent="." instance=ExtResource("3_b5h5o")]
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.812521, 0, -0.582932, 0, 1, 0, 0.582932, 0, 0.812521, -12.5522, -1.20822, -2.06224)
 fov = 106.875
@@ -35,3 +33,6 @@ omni_range = 10.8961
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_luuhj")
+
+[node name="Chunk" parent="." instance=ExtResource("4_6wc26")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95.8726, 367.418, -102.69)

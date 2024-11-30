@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dbkbxch6fd21s"]
+[gd_scene load_steps=3 format=3 uid="uid://dbkbxch6fd21s"]
 
 [ext_resource type="Script" path="res://scrypts/world/Chunk.cs" id="1_nk4hu"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_idfay"]
+
 [node name="Chunk" type="Node3D"]
 script = ExtResource("1_nk4hu")
+Noise = SubResource("FastNoiseLite_idfay")

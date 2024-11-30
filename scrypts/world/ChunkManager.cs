@@ -30,7 +30,7 @@ public partial class ChunkManager : Node
 			position.Y * Chunk.Dimensions.Z);
 
 		chunk.Noise = this.Noise;
-		chunk.chunkManager = this;
+		//chunk.chunkManager = this;
 		AddChild(chunk);
 		loadedChunks.Add(position, chunk);
 		return chunk;
